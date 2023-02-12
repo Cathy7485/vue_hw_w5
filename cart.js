@@ -40,19 +40,19 @@ const app = createApp({
     return{
       products: [],
       productId: '',
+      cart: {},
+      loadingItem: '', //存id
     }
   },
   methods:{
     getProducts(){
       axios.get(`${apiUrl}/v2/api/${apiPath}/products/all`)
         .then(res=>{
-          console.log( '產品列表:',res.data.products);
           this.products = res.data.products;
         })
     },
     openModal(id){
       this.productId = id;
-      console.log("從外層帶入", id)
     },
     addToCart(product_id, qty = 1){ //當沒有使用參數時，會使用預設值
       const data ={
@@ -61,8 +61,34 @@ const app = createApp({
       };
       axios.post(`${apiUrl}/v2/api/${apiPath}/cart`,{ data })
         .then(res => {
-          console.log('加入購物車:', res.data);
           this.$refs.productModal.hide();
+          this.getCarts();
+        })
+    },
+    getCarts() {
+      axios.get(`${apiUrl}/v2/api/${apiPath}/cart`)
+        .then(res => {
+          this.cart = res.data.data;
+        })
+    },
+    updateCartItem(item){ // 83行是購物車的id, 80行是產品的id
+      const data = {
+        product_id: item.product.id,
+        qty: item.qty,
+      };
+      this.loadingItem = item.id;
+      axios.put(`${apiUrl}/v2/api/${apiPath}/cart/${item.id}`, {data})
+        .then(res => {
+          this.loadingItem = '';
+          this.getCarts();
+        })
+    },
+    deleteItem(item) { 
+      this.loadingItem = item.id;
+      axios.delete(`${apiUrl}/v2/api/${apiPath}/cart/${item.id}`)
+        .then(res => {
+          this.loadingItem = '';
+          this.getCarts();
         })
     },
   },
@@ -72,6 +98,7 @@ const app = createApp({
   },
   mounted(){
     this.getProducts();
+    this.getCarts();
     
   }
 

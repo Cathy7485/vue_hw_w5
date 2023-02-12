@@ -34,8 +34,7 @@
             <tr v-for="product in products" :key="product.id">
               <td style="width: 200px">
                 <div style="height: 100px; background-size: cover; background-position: center;"
-                  :style="{ backgroundImage: `url(${ product.imageUrl })` }"
-                ></div>
+                  :style="{ backgroundImage: `url(${ product.imageUrl })` }"></div>
               </td>
               <td>
                 {{ product.title }}
@@ -74,43 +73,49 @@
             </tr>
           </thead>
           <tbody>
-            <!-- <template v-if="cart.carts">
-              <tr>
+            <template v-if="cart.carts">
+              <tr v-for="item in cart.carts" :key="item.id">
                 <td>
-                  <button type="button" class="btn btn-outline-danger btn-sm">
+                  <button type="button" class="btn btn-outline-danger btn-sm"
+                  @click="deleteItem(item)" :disabled="item.id === loadingItem">
                     <i class="fas fa-spinner fa-pulse"></i>
                     x
                   </button>
                 </td>
                 <td>
-                  {{ }}
-                  <div class="text-success">
+                  {{ item.product.title }}
+                  <!-- <div class="text-success">
                     已套用優惠券
-                  </div>
+                  </div> -->
                 </td>
                 <td>
                   <div class="input-group input-group-sm">
-                    <div class="input-group mb-3">
+                    <select name="" id="" class="form-select" v-model="item.qty"
+                    @change="updateCartItem(item)" 
+                    :disabled="item.id === loadingItem">
+                      <option :value="i" v-for="i in 20" :key=" '0' + i">{{ i }}</option>
+                    </select>
+                    <!-- <div class="input-group mb-3">
                       <input min="1" type="number" class="form-control">
                       <span class="input-group-text" id="basic-addon2">{{ }}</span>
-                    </div>
+                    </div> -->
                   </div>
                 </td>
                 <td class="text-end">
-                  <small class="text-success">折扣價：</small>
-                  {{ }}
+                  <!-- <small class="text-success">折扣價：</small> -->
+                  {{ item.total }}
                 </td>
               </tr>
-            </template> -->
+            </template>
           </tbody>
           <tfoot>
             <tr>
               <td colspan="3" class="text-end">總計</td>
-              <td class="text-end">{{ }}</td>
+              <td class="text-end">{{ cart.total }}</td>
             </tr>
             <tr>
               <td colspan="3" class="text-end text-success">折扣價</td>
-              <td class="text-end text-success">{{ }}</td>
+              <td class="text-end text-success">{{ cart.final_total }}</td>
             </tr>
           </tfoot>
         </table>
