@@ -47,11 +47,11 @@
               <td>
                 <div class="btn-group btn-group-sm">
                   <button type="button" class="btn btn-outline-secondary" @click="openModal(product.id)">
-                    <i class="fas fa-spinner fa-pulse"></i>
+                    <i class="fas fa-spinner fa-pulse" v-if="loadingItem === product.id"></i>
                     查看更多
                   </button>
                   <button type="button" class="btn btn-outline-danger" @click="addToCart( product.id, 1 )">
-                    <i class="fas fa-spinner fa-pulse"></i>
+                    <i class="fas fa-spinner fa-pulse" v-if="loadingItem === product.id"></i>
                     加到購物車
                   </button>
                 </div>
@@ -121,11 +121,11 @@
         </table>
       </div>
       <div class="my-5 row justify-content-center">
-        <!-- <v-form ref="form" class="col-md-6" v-slot="{ errors }">
+        <v-form ref="form" class="col-md-6" v-slot="{ errors }" @submit="onSubmit">
           <div class="mb-3">
             <label for="email" class="form-label">Email</label>
             <v-field id="email" name="email" type="email" class="form-control"
-              :class="{ 'is-invalid': errors['email'] }" placeholder="請輸入 Email"></v-field>
+              :class="{ 'is-invalid': errors['email'] }" placeholder="請輸入 Email" rules="required"></v-field>
             <error-message name="email" class="invalid-feedback"></error-message>
           </div>
 
@@ -139,7 +139,7 @@
           <div class="mb-3">
             <label for="tel" class="form-label">收件人電話</label>
             <v-field id="tel" name="電話" type="text" class="form-control" :class="{ 'is-invalid': errors['電話'] }"
-              placeholder="請輸入電話"></v-field>
+              placeholder="請輸入電話" rules="required"></v-field>
             <error-message name="電話" class="invalid-feedback"></error-message>
           </div>
 
@@ -155,9 +155,9 @@
             <textarea id="message" class="form-control" cols="30" rows="10"></textarea>
           </div>
           <div class="text-end">
-            <button type="submit" class="btn btn-danger">送出訂單</button>
+            <button type="submit" class="btn btn-danger" >送出訂單</button>
           </div>
-        </v-form> -->
+        </v-form>
       </div>
     </div>
   </div>
