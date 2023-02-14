@@ -19,7 +19,7 @@ const apiPath = 'kc777';
 
 const productModal = {
   //當id變動時，取得遠端資料，並呈現modal
-  props: ['id', 'addToCart'],
+  props: ['id', 'addToCart','openModal','loadingItem'],
   data(){
     return {
       modal:{},
@@ -28,12 +28,11 @@ const productModal = {
     }
   },
   template:"#userProductModal",
-  watch: {
+  watch: { //偵測ID的職
     id(){
       axios.get(`${apiUrl}/v2/api/${apiPath}/product/${this.id}`)
         .then(res => {
-          console.log('單一產品:', res.data.product);
-          this.tempProduct = res.data.product;
+          this.tempProduct = res.data.product; // 單一產品
           this.modal.show();
         })
     }
@@ -73,9 +72,10 @@ const app = Vue.createApp({
         .then(res=>{
           this.products = res.data.products;
         })
+        .catch(err => alert(err.res.data.message))
     },
     openModal(id){
-      this.productId = id;
+      this.productId = id; //外層的id
     },
     addToCart(product_id, qty = 1){ //當沒有使用參數時，會使用預設值
       const data ={
@@ -86,26 +86,30 @@ const app = Vue.createApp({
         .then(res => {
           this.$refs.productModal.hide();
           this.getCarts();
+          this.loadingItem = '';
         })
+        .catch(err => alert(err.res.data.message))
     },
     getCarts() {
       axios.get(`${apiUrl}/v2/api/${apiPath}/cart`)
         .then(res => {
           this.cart = res.data.data;
         })
+        .catch(err => alert(err.res.data.message))
     },
-    updateCartItem(item){ // 83行是購物車的id, 80行是產品的id
+    updateCartItem(item){ 
       const data = {
-        product_id: item.product.id,
+        product_id: item.product.id, // 產品的id
         qty: item.qty,
       };
-      this.loadingItem = item.id;
+      this.loadingItem = item.id; // 購物車的id
       axios.put(`${apiUrl}/v2/api/${apiPath}/cart/${item.id}`, {data})
         .then(res => {
+          alert(res.data.message);
           this.loadingItem = '';
           this.getCarts();
         })
-        .catch(err => alert(err.response.data.message))
+        .catch(err => alert(err.res.data.message))
     },
     deleteItem(item) { 
       this.loadingItem = item.id;
@@ -114,10 +118,17 @@ const app = Vue.createApp({
           this.loadingItem = '';
           this.getCarts();
         })
-        .catch(err => alert(err.response.data.message))
+        .catch(err => alert(err.res.data.message))
     },
     onSubmit(){
-      console.log('onSubmit');
+      const order = this.form;
+      axios.post(`${apiUrl}/v2/api/${apiPath}/order`, { order })
+        .then(res => {
+          this.getCarts();
+          alert(res.data.message);
+          this.$refs.form.resetForm();
+        })
+        // .catch(err => console.log(err))
     }  
   },
   // 區域註冊
