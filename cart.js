@@ -54,16 +54,15 @@ const app = Vue.createApp({
       productId: '',
       cart: {},
       loadingItem: '', //存id
-
-      form:{
+      data: {
         user: {
-          name: "",
-          email: "",
-          tel: "",
-          address: "",
+          name: '',
+          email: '',
+          tel: '',
+          address: '',
         },
-        message: "",
-      }
+        message: '',
+      },
     }
   },
   methods:{
@@ -121,14 +120,16 @@ const app = Vue.createApp({
         .catch(err => alert(err.res.data.message))
     },
     onSubmit(){
-      const order = this.form;
-      axios.post(`${apiUrl}/v2/api/${apiPath}/order`, { order })
-        .then(res => {
+      const data = this.data;
+      axios.post(`${apiUrl}/v2/api/${apiPath}/order`, { data })
+        .then((res) => {
           alert(res.data.message);
           this.$refs.form.resetForm();
           this.getCarts();
         })
-        .catch(err => console.log(err))
+        .catch((err) => {
+          alert(err.data.message);
+        });
     }  
   },
   // 區域註冊
