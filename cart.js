@@ -28,7 +28,7 @@ const productModal = {
     }
   },
   template:"#userProductModal",
-  watch: { //偵測ID的職
+  watch: { //偵測ID的值
     id(){
       axios.get(`${apiUrl}/v2/api/${apiPath}/product/${this.id}`)
         .then(res => {
@@ -55,14 +55,14 @@ const app = Vue.createApp({
       cart: {},
       loadingItem: '', //存id
 
-      data:{
+      form:{
         user: {
-          name: '',
-          email: '',
-          tel: '',
-          address: '',
+          name: "",
+          email: "",
+          tel: "",
+          address: "",
         },
-        message: '',
+        message: "",
       }
     }
   },
@@ -124,11 +124,11 @@ const app = Vue.createApp({
       const order = this.form;
       axios.post(`${apiUrl}/v2/api/${apiPath}/order`, { order })
         .then(res => {
-          this.getCarts();
           alert(res.data.message);
           this.$refs.form.resetForm();
+          this.getCarts();
         })
-        // .catch(err => console.log(err))
+        .catch(err => console.log(err))
     }  
   },
   // 區域註冊
